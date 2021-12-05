@@ -13,7 +13,6 @@ class ModelTests(TestCase):
         user = get_user_model().objects.create_user(
             email = email,
             password = password,
-            user_type = user_type,
         )
 
         self.assertEqual(user.email, email)

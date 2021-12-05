@@ -4,24 +4,24 @@ from django.contrib.auth.models import (AbstractBaseUser, BaseUserManager,
 
 class UserManager(BaseUserManager):
 
-    def create_user(self, email, password, user_type, **extra_fields):
+    def create_user(self, email, password, **extra_fields):
         """ Cria e salva novos user"""
         if not email:
             raise ValueError("Must Have Email Adress")
 
-        user = self.model(email=email.lower(), user_type=user_type,**extra_fields)
+        user = self.model(email=email.lower(),**extra_fields)
         user.set_password(password)
         
         user.save(using=self._db)
 
         return user
 
-    def create_superuser(self, email, password, user_type='Administrador', **extra_fields):
+    def create_superuser(self, email, password, **extra_fields):
         """Cria super user e atribui o grupo 'Administrador ao usuário'"""
 
-        user = self.create_user(email, password, user_type)
+        user = self.create_user(email, password, **extra_fields)
         user.is_staff = True
-
+        user.user_type = 'Administrador'
         user.is_superuser = True
         user.save(using=self._db)
   
@@ -35,7 +35,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 
     email = models.EmailField(max_length=255, unique=True)
-    user_type = models.CharField(max_length=100, choices=TYPES)
+    user_type = models.CharField(max_length=100, choices=TYPES, default='Anunciante')
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
 

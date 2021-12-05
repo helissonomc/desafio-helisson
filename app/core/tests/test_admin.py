@@ -9,7 +9,6 @@ class AdminSiteTests(TestCase):
         self.admin_user = get_user_model().objects.create_superuser(
             email = 'testadmin@hotmail.com',
             password = 'admin123',
-            user_type = 'Administrador',
 
         )
 
@@ -17,7 +16,6 @@ class AdminSiteTests(TestCase):
         self.user = get_user_model().objects.create_user(
             email = 'testauser@hotmail.com',
             password = 'user123',
-            user_type = 'Anunciante',
         )
 
     def test_users_listed(self):
