@@ -2,11 +2,21 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.utils.translation import gettext as _
 from core import models
+from django.contrib.auth.models import Group
+from .forms import GroupAdminForm
+from django.contrib.auth import get_user_model
 # Register your models here.
 
 class UserAdmin(BaseUserAdmin):
     ordering = ['id']
-    list_display = ['email', 'user_type']
+    def group(self, user):
+        groups = []
+        for group in user.groups.all():
+            groups.append(group.name)
+        return ' '.join(groups)
+    group.short_description = 'Groups'
+
+    list_display = ['email', 'group']
 
     fieldsets = (
         (None, {
@@ -16,7 +26,7 @@ class UserAdmin(BaseUserAdmin):
             ),
         }),
     
-        (_('Personal Info'),{
+        (_('Groups'),{
             'fields':(
                 'user_type',
             ),
@@ -46,3 +56,15 @@ class UserAdmin(BaseUserAdmin):
     )
 
 admin.site.register(models.User, UserAdmin)
+
+admin.site.unregister(Group)
+
+# Create a new Group admin.
+class GroupAdmin(admin.ModelAdmin):
+    # Use our custom form.
+    form = GroupAdminForm
+    # Filter permissions horizontal as well.
+    filter_horizontal = ['permissions']
+
+# Register the new Group ModelAdmin.
+admin.site.register(Group, GroupAdmin)

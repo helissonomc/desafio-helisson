@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import Group
 from django.contrib.auth.models import (AbstractBaseUser, BaseUserManager,
                                         PermissionsMixin)
 
@@ -14,14 +15,23 @@ class UserManager(BaseUserManager):
         
         user.save(using=self._db)
 
+        new_group, created = Group.objects.get_or_create(name='Anunciante')
+
+        new_group.user_set.add(user)
         return user
 
     def create_superuser(self, email, password, **extra_fields):
         """Cria super user e atribui o grupo 'Administrador ao usuário'"""
 
         user = self.create_user(email, password, **extra_fields)
+        
+        user.groups.clear()
+        new_group, created = Group.objects.get_or_create(name='Administrador')
+        new_group.user_set.add(user)
+
         user.is_staff = True
         user.user_type = 'Administrador'
+
         user.is_superuser = True
         user.save(using=self._db)
   

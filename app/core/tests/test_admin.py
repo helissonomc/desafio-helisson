@@ -2,20 +2,25 @@ from django.test import TestCase, Client
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 
+PAYLOAD = {
+    'email': 'test@hotmail.com',
+    'password':'testando123',
+}
+
 class AdminSiteTests(TestCase):
 
     def setUp(self):
         self.client = Client()
         self.admin_user = get_user_model().objects.create_superuser(
-            email = 'testadmin@hotmail.com',
-            password = 'admin123',
+            email = PAYLOAD['email'],
+            password = PAYLOAD['password'],
 
         )
 
         self.client.force_login(self.admin_user)
         self.user = get_user_model().objects.create_user(
             email = 'testauser@hotmail.com',
-            password = 'user123',
+            password = PAYLOAD['password'],
         )
 
     def test_users_listed(self):
