@@ -8,7 +8,7 @@ from rest_framework import status
 """Setando variavel que será usada mutiplas vezes"""
 CREATE_USER_URL = reverse('user:create')
 TOKEN_URL = reverse('user:token')
-
+ME_URL = reversed('user:me')
 
 """função para deixar a criação de user mais curta"""
 def create_user(**params):
@@ -23,7 +23,6 @@ class PublicUserApiTests(TestCase):
         payload = {
             'email': 'test@hotmail.com',
             'password':'testando123',
-            'user_type': 'Anunciante',
         }
 
         res = self.client.post(CREATE_USER_URL, payload)
@@ -33,7 +32,7 @@ class PublicUserApiTests(TestCase):
         user = get_user_model().objects.get(**res.data)
 
         self.assertTrue (user.check_password(payload['password']))
-        self.assertEqual(user.user_type, payload['user_type'])
+        self.assertEqual(user.user_type, 'Anunciante')
         self.assertNotIn('password', res.data)
 
     def test_user_exist(self):
@@ -41,7 +40,6 @@ class PublicUserApiTests(TestCase):
         payload = {
             'email': 'test@hotmail.com',
             'password':'testando123',
-            'user_type': 'Anunciante',
         }
         create_user(**payload)
 
@@ -52,7 +50,7 @@ class PublicUserApiTests(TestCase):
         payload = {
             'email': 'test@hotmail.com',
             'password':'sd',
-            'user_type': 'Anunciante',
+
         }
 
         res = self.client.post(CREATE_USER_URL, payload)
@@ -70,7 +68,7 @@ class PublicUserApiTests(TestCase):
         payload = {
             'email': 'test@hotmail.com',
             'password':'testando123',
-            'user_type': 'Anunciante',
+
         }
 
         create_user(**payload)
@@ -81,14 +79,12 @@ class PublicUserApiTests(TestCase):
 
     def test_create_token_token_invalid_credentials(self):
         create_user(email='test@hotmail.com', 
-                    password='testando1234', 
-                    user_type='Anunciante')
+                    password='testando1234')
 
         
         payload = {
             'email': 'test@hotmail.com',
             'password':'testando123',
-            'user_type': 'Anunciante',
         }
 
         res = self.client.post(TOKEN_URL, payload)
@@ -100,7 +96,6 @@ class PublicUserApiTests(TestCase):
         payload = {
             'email': 'test@hotmail.com',
             'password':'testando123',
-            'user_type': 'Anunciante',
         }
 
         res = self.client.post(TOKEN_URL, payload)
