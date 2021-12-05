@@ -28,7 +28,6 @@ class AdminSiteTests(TestCase):
        
         res = self.client.get(url)
 
-        self.assertContains(res, self.user.user_type)
         self.assertContains(res, self.user.email)
 
     def test_user_change_page(self):

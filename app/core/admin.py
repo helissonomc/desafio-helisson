@@ -25,12 +25,6 @@ class UserAdmin(BaseUserAdmin):
                 'password',
             ),
         }),
-    
-        (_('Groups'),{
-            'fields':(
-                'user_type',
-            ),
-        }),
 
         ( _('permissions'),{
             'fields':(
@@ -51,7 +45,7 @@ class UserAdmin(BaseUserAdmin):
     add_fieldsets = (
         (None, {
             'classes':('wide',),
-            'fields':('email', 'user_type', 'password1', 'password2')
+            'fields':('email', 'password1', 'password2')
         }),
     )
 

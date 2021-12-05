@@ -20,7 +20,6 @@ class ModelTests(TestCase):
 
         self.assertEqual(user.email, PAYLOAD['email'])
         self.assertTrue(user.check_password(PAYLOAD['password']))
-        self.assertEqual(user.user_type, user_type)
         self.assertEqual(user.groups.all()[0].name, user_type)
 
     def test_create_superuser_successful(self):
@@ -34,24 +33,22 @@ class ModelTests(TestCase):
 
         self.assertEqual(user.email, PAYLOAD['email'])
         self.assertTrue(user.check_password(PAYLOAD['password']))
-        self.assertEqual(user.user_type, user_type)
         self.assertEqual(user.groups.all()[0].name, user_type)
         
     def test_new_user_email_normalized(self):
         """Teste email normalize"""
         email = 'test@HOTmail.com'
-        user_type = 'Anunciante'
+
         user = get_user_model().objects.create_user(email, 'test123')
 
         self.assertEqual(user.email, email.lower())
-        self.assertEqual(user.user_type, user_type)
 
 
 
     def test_create_user_fail(self):
         with self.assertRaises(ValueError):
-            user_type = 'Anunciante'
-            get_user_model().objects.create_user(None, 'test123', user_type=user_type)
+
+            get_user_model().objects.create_user(None, 'test123')
 
 
     

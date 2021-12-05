@@ -8,7 +8,7 @@ from rest_framework import status
 """Setando variavel que será usada mutiplas vezes"""
 CREATE_USER_URL = reverse('user:create')
 TOKEN_URL = reverse('user:token')
-ME_URL = reversed('user:me')
+ME_URL = reverse('user:me')
 
 PAYLOAD = {
     'email': 'test@hotmail.com',
@@ -35,7 +35,6 @@ class PublicUserApiTests(TestCase):
         user = get_user_model().objects.get(**res.data)
 
         self.assertTrue (user.check_password(PAYLOAD['password']))
-        self.assertEqual(user.user_type, 'Anunciante')
         self.assertNotIn('password', res.data)
 
     def test_user_exist(self):
@@ -90,7 +89,7 @@ class PublicUserApiTests(TestCase):
         res = self.client.post(TOKEN_URL, {'email':PAYLOAD['email'], 'password':''})
         self.assertNotIn('token', res.data)
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
-'''
+    
     def test_retrieve_user_unauthorized(self):
         
         res = self.client.get(ME_URL)
@@ -133,4 +132,4 @@ class PrivateUserApiTests(TestCase):
 
         self.user.refresh_from_db()
         self.assertTrue(self.user.check_password(payload['password'])) 
-        self.assertEqual(res.status_code, status.HTTP_200_OK)'''
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
