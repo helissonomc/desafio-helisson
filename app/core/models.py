@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.models import Group
 from django.contrib.auth.models import (AbstractBaseUser, BaseUserManager,
                                         PermissionsMixin)
+from django.conf import settings
+
 
 class UserManager(BaseUserManager):
 
@@ -50,3 +52,20 @@ class User(AbstractBaseUser, PermissionsMixin):
     objects = UserManager()
 
     USERNAME_FIELD = 'email'
+
+
+class Demanda(models.Model):
+
+    anunciante = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+    )
+
+    nome_peca = models.CharField(max_length=255, null=False)
+    descricao_peca = models.CharField(max_length=255)
+    endereco = models.CharField(max_length=255, null=False)
+    info_contato = models.CharField(max_length=255, null=False)
+    status_finalizacao  = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.nome_peca

@@ -1,11 +1,16 @@
-from django.contrib.auth.models import Group
 from django.test import TestCase
 from django.contrib.auth import get_user_model
+from core import models
+
 
 PAYLOAD = {
     'email': 'test@hotmail.com',
     'password':'testando123',
 }
+
+
+def sample_user(email=PAYLOAD['email'], password=PAYLOAD['password']):
+    return get_user_model().objects.create_user(email,password)
 
 
 class ModelTests(TestCase):
@@ -43,13 +48,21 @@ class ModelTests(TestCase):
 
         self.assertEqual(user.email, email.lower())
 
-
-
     def test_create_user_fail(self):
         with self.assertRaises(ValueError):
 
             get_user_model().objects.create_user(None, 'test123')
 
 
-    
+    def test_demanda_str(self):
+        """Testa a representação dastring do model demanda"""
+        demanda = models.Demanda.objects.create(
+            anunciante=sample_user(),
+            nome_peca='Nome peca',
+            descricao_peca='Teste Desc',
+            endereco='Rua test',
+            info_contato='contato',
+            #status_finalizacao=False,
+        )
 
+        self.assertEqual(str(demanda), demanda.nome_peca)

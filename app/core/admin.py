@@ -62,3 +62,5 @@ class GroupAdmin(admin.ModelAdmin):
 
 # Register the new Group ModelAdmin.
 admin.site.register(Group, GroupAdmin)
+
+admin.site.register(models.Demanda)
