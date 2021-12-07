@@ -1,13 +1,11 @@
 from django.shortcuts import render
 from rest_framework import viewsets, mixins
 from rest_framework.authentication import TokenAuthentication
-from rest_framework import permissions
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from django.db import IntegrityError, reset_queries
-from rest_framework import status
-from rest_framework.views import APIView
 from core.models import Demanda
 from demanda import serializers
+from .permissions import BlockAdministradorRequest
 
 class DemandaGetInsertViewSet(viewsets.GenericViewSet, 
                               mixins.ListModelMixin,
@@ -16,7 +14,7 @@ class DemandaGetInsertViewSet(viewsets.GenericViewSet,
                               mixins.DestroyModelMixin):
 
     authentication_classes = (TokenAuthentication,)
-    permission_classes = (permissions.IsAuthenticated, )
+    permission_classes = (IsAuthenticated, BlockAdministradorRequest)
     queryset = Demanda.objects.all()
     serializer_class = serializers.DemandaSerializer
 
@@ -31,7 +29,7 @@ class DemandaGetInsertViewSet(viewsets.GenericViewSet,
 class DemandaFinilizarViewSet(viewsets.GenericViewSet, mixins.UpdateModelMixin):
 
     authentication_classes = (TokenAuthentication,)
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
     queryset = Demanda.objects.all()
     serializer_class = serializers.DemandaSerializer
 

@@ -49,6 +49,20 @@ class UserAdmin(BaseUserAdmin):
         }),
     )
 
+
+class DemandaAdmin(admin.ModelAdmin):
+    ordering = ['nome_peca']
+    list_display = [
+        'nome_peca',
+        'descricao_peca',
+        'anunciante',
+        'endereco',
+        'info_contato',
+        'status_finalizacao',
+    ]
+
+admin.site.register(models.Demanda, DemandaAdmin)
+
 admin.site.register(models.User, UserAdmin)
 
 admin.site.unregister(Group)
@@ -62,5 +76,3 @@ class GroupAdmin(admin.ModelAdmin):
 
 # Register the new Group ModelAdmin.
 admin.site.register(Group, GroupAdmin)
-
-admin.site.register(models.Demanda)
