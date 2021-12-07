@@ -1,0 +1,172 @@
+{
+	"id": "1a7daf6f-3dfc-477c-9b9b-48aafa2ef04f",
+	"name": "Desafio Hélisson",
+	"timestamp": "2021-12-07T06:05:19.444Z",
+	"collection_id": "14109855-56065089-8670-4925-a2f9-9edcdb4830c5",
+	"folder_id": 0,
+	"environment_id": "e6f8624e-8743-4fa2-b66d-d80e93d11e47",
+	"totalPass": 0,
+	"totalFail": 0,
+	"results": [
+		{
+			"id": "b96352f4-2b1f-4d8d-bcaa-6da5ffcc2bc2",
+			"name": "Creating User",
+			"url": "http://127.0.0.1:8000/api/user/create/",
+			"time": 201,
+			"responseCode": {
+				"code": 201,
+				"name": "Created"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				201
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "61c97e08-eb73-4025-bf55-7ce866ed0f9a",
+			"name": "Retriving Token",
+			"url": "http://127.0.0.1:8000/api/user/token/",
+			"time": 196,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				196
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "af078fa9-a1ff-423c-8cb7-ba3cc748a0e9",
+			"name": "Creating Demanda",
+			"url": "http://127.0.0.1:8000/api/demanda/",
+			"time": 17,
+			"responseCode": {
+				"code": 201,
+				"name": "Created"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				17
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "f8f1e04e-8bf6-47cb-8a20-83453327a743",
+			"name": "Listing Demandas",
+			"url": "http://127.0.0.1:8000/api/demanda/",
+			"time": 16,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				16
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "ad87988e-f18b-4336-8da0-900b87fa1e76",
+			"name": "Updating Demanda",
+			"url": "http://127.0.0.1:8000/api/demanda/19/",
+			"time": 17,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				17
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "dd56a2a1-4762-4605-a53b-c7de656a6530",
+			"name": "Finalizar Demanda",
+			"url": "http://127.0.0.1:8000/api/demanda/finalizar/19/",
+			"time": 13,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				13
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "dff7e831-b0bf-4b1c-acdf-bbf3343d6894",
+			"name": "Deleting Demanda",
+			"url": "http://127.0.0.1:8000/api/demanda/19/",
+			"time": 56,
+			"responseCode": {
+				"code": 204,
+				"name": "No Content"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				56
+			],
+			"allTests": [
+				{}
+			]
+		}
+	],
+	"count": 1,
+	"totalTime": 516,
+	"collection": {
+		"requests": [
+			{
+				"id": "b96352f4-2b1f-4d8d-bcaa-6da5ffcc2bc2",
+				"method": "POST"
+			},
+			{
+				"id": "61c97e08-eb73-4025-bf55-7ce866ed0f9a",
+				"method": "POST"
+			},
+			{
+				"id": "af078fa9-a1ff-423c-8cb7-ba3cc748a0e9",
+				"method": "POST"
+			},
+			{
+				"id": "f8f1e04e-8bf6-47cb-8a20-83453327a743",
+				"method": "GET"
+			},
+			{
+				"id": "ad87988e-f18b-4336-8da0-900b87fa1e76",
+				"method": "PATCH"
+			},
+			{
+				"id": "dd56a2a1-4762-4605-a53b-c7de656a6530",
+				"method": "PATCH"
+			},
+			{
+				"id": "dff7e831-b0bf-4b1c-acdf-bbf3343d6894",
+				"method": "DELETE"
+			}
+		]
+	}
+}
