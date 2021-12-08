@@ -12,7 +12,7 @@ class DemandaGetInsertViewSet(viewsets.GenericViewSet,
                               mixins.UpdateModelMixin,
                               mixins.DestroyModelMixin):
 
-    permission_classes = (IsAuthenticated, BlockAdministradorRequest)
+    permission_classes = (IsAuthenticated, BlockAdministradorRequest,)
     queryset = Demanda.objects.all()
     serializer_class = serializers.DemandaSerializer
 

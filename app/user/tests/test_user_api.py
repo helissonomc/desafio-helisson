@@ -10,8 +10,6 @@ CREATE_USER_URL = reverse('user:create')
 
 TOKEN_URL = reverse('user:token')
 
-ME_URL = reverse('user:me')
-
 CRED = {
     'email': 'test@hotmail.com',
     'password': 'testando123',
@@ -99,47 +97,3 @@ class PublicUserApiTests(TestCase):
         )
         self.assertNotIn('access', res.data)
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
-    
-    def test_retrieve_user_unauthorized(self):
-        
-        res = self.client.get(ME_URL)
-
-        self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
-
-
-class PrivateUserApiTests(TestCase):
-    """Testa requests que precisam de atorização"""
-
-    def setUp(self):
-        self.user = create_user(
-            email='test@hotmail.com',
-            password='teste123'
-        )
-
-        self.client = APIClient()
-
-        self.client.force_authenticate(user=self.user)
-        
-    def test_retrieve_profile_success(self):
-        
-        res = self.client.get(ME_URL)
-
-        self.assertEqual(res.status_code, status.HTTP_200_OK)
-        self.assertEqual(res.data,{
-            'email': self.user.email
-        })
-
-    def test_post_me_not_allowed(self):
-        res = self.client.post(ME_URL, {})
-
-        self.assertEqual(res.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
-
-    def test_update_user_profile(self):
-
-        payload = {'password': 'newpassword123'}
-
-        res = self.client.patch(ME_URL, payload)
-
-        self.user.refresh_from_db()
-        self.assertTrue(self.user.check_password(payload['password']))
-        self.assertEqual(res.status_code, status.HTTP_200_OK)

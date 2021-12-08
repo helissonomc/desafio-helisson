@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-d0nvu$3i$6)5$2i311vpnu5esp%9+5_98%ih)ja=h9az$a^-0_
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
 
 # Application definition
@@ -78,6 +78,10 @@ TEMPLATES = [
 WSGI_APPLICATION = 'app.wsgi.application'
 
 REST_FRAMEWORK = {
+    
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
