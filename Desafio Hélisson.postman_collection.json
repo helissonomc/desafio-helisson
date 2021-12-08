@@ -65,9 +65,9 @@
 								"exec": [
 									"var jsonData = JSON.parse(responseBody);",
 									"",
-									"pm.environment.set(\"token\", \"Token \"+jsonData.token);",
+									"pm.environment.set(\"token\", jsonData.access);",
 									"",
-									"console.log(pm.variables.get(\"token\"))"
+									"console.log(pm.environment.get(\"token\"))"
 								],
 								"type": "text/javascript"
 							}
@@ -111,12 +111,23 @@
 				{
 					"name": "Creating Demanda",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "{{token}}",
-								"type": "text"
+								"value": "Token eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjM4OTM4MzE5LCJpYXQiOjE2Mzg5MzgwMTksImp0aSI6Ijc0YWQ2NGJjZGFiYjQzY2NiNjJjN2FlNjcwN2NiZjM1IiwidXNlcl9pZCI6NH0.PH5gqrunVPoiUk7uPm9KaihUhfx1GNFvZH_Dg_dX_gM",
+								"type": "text",
+								"disabled": true
 							}
 						],
 						"body": {
@@ -164,12 +175,23 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "{{token}}",
-								"type": "text"
+								"value": "",
+								"type": "text",
+								"disabled": true
 							}
 						],
 						"url": {
@@ -205,14 +227,18 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "PATCH",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "{{token}}",
-								"type": "text"
-							}
-						],
+						"header": [],
 						"body": {
 							"mode": "raw",
 							"raw": "{\n    \"descricao_peca\":\"{{descricao_update}}\"\n}",
@@ -239,12 +265,23 @@
 				{
 					"name": "Finalizar Demanda",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "PATCH",
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "{{token}}",
-								"type": "text"
+								"value": "",
+								"type": "text",
+								"disabled": true
 							}
 						],
 						"url": {
@@ -270,12 +307,23 @@
 				{
 					"name": "Deleting Demanda",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "DELETE",
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "{{token}}",
-								"type": "text"
+								"value": "",
+								"type": "text",
+								"disabled": true
 							}
 						],
 						"url": {
