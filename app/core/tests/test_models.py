@@ -3,41 +3,42 @@ from django.contrib.auth import get_user_model
 from core import models
 
 
-PAYLOAD = {
+CRED = {
     'email': 'test@hotmail.com',
-    'password':'testando123',
+    'password': 'testando123',
 }
 
 
-def sample_user(email=PAYLOAD['email'], password=PAYLOAD['password']):
-    return get_user_model().objects.create_user(email,password)
+def sample_user(email=CRED['email'], password=CRED['password']):
+    return get_user_model().objects.create_user(email, password)
 
 
 class ModelTests(TestCase):
 
     def test_create_user_successful(self):
+
         user_type = 'Anunciante'
         
         user = get_user_model().objects.create_user(
-            email = PAYLOAD['email'],
-            password = PAYLOAD['password'],
+            email=CRED['email'],
+            password=CRED['password'],
         )
 
-        self.assertEqual(user.email, PAYLOAD['email'])
-        self.assertTrue(user.check_password(PAYLOAD['password']))
+        self.assertEqual(user.email, CRED['email'])
+        self.assertTrue(user.check_password(CRED['password']))
         self.assertEqual(user.groups.all()[0].name, user_type)
 
     def test_create_superuser_successful(self):
        
         user_type = 'Administrador'
         user = get_user_model().objects.create_superuser(
-            email = PAYLOAD['email'],
-            password = PAYLOAD['password'],
+            email=CRED['email'],
+            password=CRED['password'],
 
         )
 
-        self.assertEqual(user.email, PAYLOAD['email'])
-        self.assertTrue(user.check_password(PAYLOAD['password']))
+        self.assertEqual(user.email, CRED['email'])
+        self.assertTrue(user.check_password(CRED['password']))
         self.assertEqual(user.groups.all()[0].name, user_type)
         
     def test_new_user_email_normalized(self):
@@ -55,14 +56,13 @@ class ModelTests(TestCase):
 
 
     def test_demanda_str(self):
-        """Testa a representação dastring do model demanda"""
+        """Testa a representação da string do model demanda"""
         demanda = models.Demanda.objects.create(
             anunciante=sample_user(),
             nome_peca='Nome peca',
             descricao_peca='Teste Desc',
             endereco='Rua test',
             info_contato='contato',
-            #status_finalizacao=False,
         )
 
         self.assertEqual(str(demanda), demanda.nome_peca)

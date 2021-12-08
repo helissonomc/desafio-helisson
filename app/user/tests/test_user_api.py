@@ -7,12 +7,14 @@ from rest_framework import status
 
 """Setando variavel que será usada mutiplas vezes"""
 CREATE_USER_URL = reverse('user:create')
+
 TOKEN_URL = reverse('user:token')
+
 ME_URL = reverse('user:me')
 
-PAYLOAD = {
+CRED = {
     'email': 'test@hotmail.com',
-    'password':'testando123',
+    'password': 'testando123',
 }
 
 
@@ -20,74 +22,82 @@ PAYLOAD = {
 def create_user(**params):
     return get_user_model().objects.create_user(**params)
 
+
 class PublicUserApiTests(TestCase):
-    
+
     def setUp(self):
         self.client = APIClient()
 
     def test_create_user_successful(self):
-        
-
-        res = self.client.post(CREATE_USER_URL, PAYLOAD)
+        """criando ussuário com sucesso"""
+        res = self.client.post(CREATE_USER_URL, CRED)
 
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
 
         user = get_user_model().objects.get(**res.data)
 
-        self.assertTrue (user.check_password(PAYLOAD['password']))
+        self.assertTrue(user.check_password(CRED['password']))
         self.assertNotIn('password', res.data)
 
     def test_user_exist(self):
         """criando usuario que já existe"""
 
-        create_user(**PAYLOAD)
+        create_user(**CRED)
 
-        res = self.client.post(CREATE_USER_URL, PAYLOAD)
+        res = self.client.post(CREATE_USER_URL, CRED)
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_password_too_short(self):
 
-
-        res = self.client.post(CREATE_USER_URL, {'email':PAYLOAD['email'], 'password':'sd'})
+        res = self.client.post(
+            CREATE_USER_URL,
+            {
+                'email': CRED['email'],
+                'password': 'sd'
+            }
+        )
 
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
 
-        
         user_exists = get_user_model().objects.filter(
-            email=PAYLOAD['email']
+            email=CRED['email']
         ).exists()
-        
+
         self.assertFalse(user_exists)
 
     def test_create_token_for_user(self):
+        create_user(**CRED)
+        res = self.client.post(TOKEN_URL, CRED)
 
-
-        create_user(**PAYLOAD)
-        res = self.client.post(TOKEN_URL, PAYLOAD)
-
-        self.assertIn('token', res.data)
+        self.assertIn('access', res.data)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
 
-    def test_create_token_token_invalid_credentials(self):
-        create_user(email=PAYLOAD['email'], 
-                    password='testando1234')
+    def test_create_token_invalid_credentials(self):
+        create_user(
+            email=CRED['email'],
+            password='testando1234'
+        )
 
-        
+        res = self.client.post(TOKEN_URL, CRED)
 
-        res = self.client.post(TOKEN_URL, PAYLOAD)
-
-        self.assertNotIn('token', res.data)
-        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertNotIn('access', res.data)
+        self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_create_token_no_user(self):
 
-        res = self.client.post(TOKEN_URL, PAYLOAD)
-        self.assertNotIn('token', res.data)
+        res = self.client.post(TOKEN_URL, {'email': '', })
+        self.assertNotIn('access', res.data)
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_reate_toke_missing_token(self):
-        res = self.client.post(TOKEN_URL, {'email':PAYLOAD['email'], 'password':''})
-        self.assertNotIn('token', res.data)
+        res = self.client.post(
+            TOKEN_URL,
+            {
+                'email': CRED['email'],
+                'password': ''
+            }
+        )
+        self.assertNotIn('access', res.data)
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
     
     def test_retrieve_user_unauthorized(self):
@@ -116,7 +126,7 @@ class PrivateUserApiTests(TestCase):
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data,{
-            'email':self.user.email
+            'email': self.user.email
         })
 
     def test_post_me_not_allowed(self):
@@ -126,10 +136,10 @@ class PrivateUserApiTests(TestCase):
 
     def test_update_user_profile(self):
 
-        payload = {'password':'newpassword123'}  
+        payload = {'password': 'newpassword123'}
 
         res = self.client.patch(ME_URL, payload)
 
         self.user.refresh_from_db()
-        self.assertTrue(self.user.check_password(payload['password'])) 
+        self.assertTrue(self.user.check_password(payload['password']))
         self.assertEqual(res.status_code, status.HTTP_200_OK)

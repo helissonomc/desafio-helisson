@@ -11,43 +11,46 @@ from demanda.serializers import DemandaSerializer
 
 DEMANDAS_URL = reverse('demanda:demanda-list')
 
-PAYLOAD = {
+CRED = {
     'email': 'test@hotmail.com',
-    'password':'testando123',
+    'password': 'testando123',
 }
 
 DEMANDA_DATA = [
     {
-        'nome_peca':'cNome peca1',
-        'descricao_peca':'cTeste Desc1',
-        'endereco':'Rua test1',
-        'info_contato':'contato1',
+        'nome_peca': 'cNome peca1',
+        'descricao_peca': 'cTeste Desc1',
+        'endereco': 'Rua test1',
+        'info_contato': 'contato1',
     },
 
     {
-        'nome_peca':'bNome peca2',
-        'descricao_peca':'bTeste Desc2',
-        'endereco':'Rua test2',
-        'info_contato':'contato2',
+        'nome_peca': 'bNome peca2',
+        'descricao_peca': 'bTeste Desc2',
+        'endereco': 'Rua test2',
+        'info_contato': 'contato2',
     },
 
     {
-        'nome_peca':'aNome peca3',
-        'descricao_peca':'aTeste Desc3',
-        'endereco':'Rua test3',
-        'info_contato':'contato3',
+        'nome_peca': 'aNome peca3',
+        'descricao_peca': 'aTeste Desc3',
+        'endereco': 'Rua test3',
+        'info_contato': 'contato3',
     },
 
 ]
 
+
 def destroy_url(demanda_id):
     return reverse('demanda:demanda-detail', args=[demanda_id])
+
 
 def finalizar_url(demanda_id):
     return reverse('demanda:finalizar-detail', args=[demanda_id])
 
+
 class PublicDemandasApiTests(TestCase):
-    
+
     def setUp(self):
         self.client = APIClient()
 
@@ -56,14 +59,14 @@ class PublicDemandasApiTests(TestCase):
         res = self.client.get(DEMANDAS_URL)
 
         self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
-        
+
 
 class PrivateDemanddasApiTests(TestCase):
-    
+
     def setUp(self):
         self.user = get_user_model().objects.create_user(
-            PAYLOAD['email'],
-            PAYLOAD['password'],
+            CRED['email'],
+            CRED['password'],
         )
 
         self.client = APIClient()
@@ -85,7 +88,7 @@ class PrivateDemanddasApiTests(TestCase):
             endereco=DEMANDA_DATA[0]['endereco'],
             info_contato=DEMANDA_DATA[0]['info_contato'],
         )
-        
+
         Demanda.objects.create(
             anunciante=self.user,
             nome_peca=DEMANDA_DATA[1]['nome_peca'],
@@ -94,7 +97,7 @@ class PrivateDemanddasApiTests(TestCase):
             info_contato=DEMANDA_DATA[1]['info_contato'],
         )
 
-        
+
 
         res = self.client.get(DEMANDAS_URL)
         demandas = Demanda.objects.all().order_by('id')
@@ -109,7 +112,7 @@ class PrivateDemanddasApiTests(TestCase):
 
         user2 = get_user_model().objects.create_user(
             'user2@hotmail.com',
-            PAYLOAD['password'],
+            CRED['password'],
         )
 
         Demanda.objects.create(
@@ -147,13 +150,14 @@ class PrivateDemanddasApiTests(TestCase):
         self.assertTrue(exist.exists())
 
     def test_create_demanda_fail(self):
-        res = self.client.post(DEMANDAS_URL, {'user':self.user, 'nome_peca':''})
+        res = self.client.post(DEMANDAS_URL, {'user': self.user,
+                                              'nome_peca': ''})
 
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
 
 
     def test_delete_demanda(self):
-        
+
         demanda = Demanda.objects.create(
             anunciante=self.user,
             nome_peca=DEMANDA_DATA[0]['nome_peca'],
@@ -161,7 +165,7 @@ class PrivateDemanddasApiTests(TestCase):
             endereco=DEMANDA_DATA[0]['endereco'],
             info_contato=DEMANDA_DATA[0]['info_contato'],
         )
-        
+
         res = self.client.delete(destroy_url(demanda.id))
         self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
 
@@ -176,10 +180,10 @@ class PrivateDemanddasApiTests(TestCase):
         )
 
 
-        update_to ={
-            "nome_peca":"novo nome", 
+        update_to = {
+            "nome_peca": "novo nome",
         }
-        res = self.client.patch(destroy_url(demanda.id), update_to)
+        self.client.patch(destroy_url(demanda.id), update_to)
 
         demanda.refresh_from_db()
         self.assertEqual(demanda.nome_peca, update_to['nome_peca'])
@@ -192,44 +196,42 @@ class PrivateDemanddasApiTests(TestCase):
             endereco=DEMANDA_DATA[0]['endereco'],
             info_contato=DEMANDA_DATA[0]['info_contato'],
         )
-        self.assertEqual(demanda.status_finalizacao , False)
-        
+        self.assertEqual(demanda.status_finalizacao, False)
+
         res = self.client.put(finalizar_url(demanda.id))
-        
+
         self.assertTrue(res.data['status_finalizacao'])
 
     def test_administrador_create_demanda(self):
         superuser = get_user_model().objects.create_superuser(
-            email = 'superuser@hotmail.com',
-            password = PAYLOAD['password'],
+            email='superuser@hotmail.com',
+            password=CRED['password'],
 
         )
         self.client.force_login(superuser)
 
-        self.assertTrue( not superuser.groups.filter(name='Anunciante').exists())
-        
+        self.assertTrue(not superuser.groups.filter(name='Anunciante').exists())
 
-        res = self.client.post(DEMANDAS_URL, DEMANDA_DATA[0])
+        self.client.post(DEMANDAS_URL, DEMANDA_DATA[0])
 
         exist = Demanda.objects.filter(
             anunciante=superuser,
             nome_peca=DEMANDA_DATA[0]['nome_peca'],
         ).exists()
-        
+
         self.assertTrue(not exist)
 
 
     def test_administrador_update_demanda(self):
         superuser = get_user_model().objects.create_superuser(
-            email = 'superuser@hotmail.com',
-            password = PAYLOAD['password'],
-
+            email='superuser@hotmail.com',
+            password=CRED['password'],
         )
         self.client.force_login(superuser)
 
-        self.assertTrue( not superuser.groups.filter(name='Anunciante').exists())
-        
-        res = self.client.post(DEMANDAS_URL, DEMANDA_DATA[0])
+        self.assertTrue(not superuser.groups.filter(name='Anunciante').exists())
+
+        self.client.post(DEMANDAS_URL, DEMANDA_DATA[0])
 
         exist = Demanda.objects.filter(
             anunciante=superuser,

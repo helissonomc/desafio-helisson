@@ -5,12 +5,10 @@ from django.db.utils import OperationalError
 from django.test import TestCase
 
 
-
 class CommandTests(TestCase):
 
     def test_wait_for_db_ready(self):
         """ Esperando pelo db quando estiver disponivel"""
-
         with patch('django.db.utils.ConnectionHandler.__getitem__') as gi:
             """ Quando o Test acontecer, o valor da conection será setado para True"""
             gi.return_value = True
@@ -20,7 +18,6 @@ class CommandTests(TestCase):
     """Durante o teste não irá esperar para re-conectar no bd"""
     @patch('time.sleep', return_value=True)
     def test_wait_for_db(self, ts):
-
         """ Test espera pelo o db"""
         with patch('django.db.utils.ConnectionHandler.__getitem__') as gi:
             gi.side_effect = [OperationalError] * 5 + [True]
